@@ -1,0 +1,32 @@
+/* src/styles/Flashcard.css */
+.flashcard {
+    width: 300px;
+    height: 200px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+  }
+  
+  .flipped {
+    transform: rotateY(180deg);
+  }
+  
+  .flashcard-front, .flashcard-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .flashcard-back {
+    transform: rotateY(180deg);
+  }
+  
