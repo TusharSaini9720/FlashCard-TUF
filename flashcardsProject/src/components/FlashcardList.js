@@ -14,7 +14,7 @@ const FlashcardList = () => {
     useEffect(()=>{
       const fetchflashcards =async()=>{
         try{
-         const res=await axios.get("http://localhost:5000/flashcards");
+         const res=await axios.get("https://flashcard-tuf.onrender.com");
          setflashcards(res.data);
         }catch(err){
           console.log("error",err);

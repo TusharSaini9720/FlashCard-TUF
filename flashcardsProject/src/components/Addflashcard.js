@@ -18,7 +18,7 @@ function AdminDashboard() {
     useEffect(()=>{
         const fetchflashcards =async()=>{
           try{
-           const res=await axios.get("http://localhost:5000/flashcards");
+           const res=await axios.get("https://flashcard-tuf.onrender.com");
            setFlashcards(res.data);
           }catch(err){
             console.log("error",err);
