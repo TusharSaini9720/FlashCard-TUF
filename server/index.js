@@ -22,6 +22,11 @@ db.connect(err => {
         console.log('MySQL Connected...');
     }
 });
+app.use(express.static(path.join(__dirname, 'build')));
+
+app.get('/*', function (req, res) {
+  res.sendFile(path.join(__dirname, 'flashcardsProject','build', 'index.html'));
+});
 
 app.get('/flashcards', (req, res) => {
     const query = 'SELECT * FROM flashcard';
