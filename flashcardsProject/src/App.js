@@ -2,7 +2,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from'react-router-dom';
 import FlashcardList from './components/FlashcardList';
-import flashcards from './data/flashcard';
 import Addflashcard from './components/Addflashcard';
 import Navbar from './components/Navbar';
 import './App.css'
