@@ -8,8 +8,8 @@ require('dotenv').config();
 const app = express();
 
 app.use(express.json());
-app.use(cookieParser());  // Parse cookies before routes that need it
 
+// CORS configuration
 const corsOption = {
     origin: ['http://127.0.0.1:3001', "https://flashcard-tuf.onrender.com/"],
     credentials: true,
@@ -17,6 +17,10 @@ const corsOption = {
 };
 app.use(cors(corsOption));
 
+// Middleware to parse cookies
+app.use(cookieParser());
+
+// Database connection
 const db = sql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
@@ -26,7 +30,7 @@ const db = sql.createConnection({
 
 db.connect(err => {
     if (err) {
-        console.log(err);
+        console.log('Database connection failed:', err);
     } else {
         console.log('MySQL Connected...');
     }
@@ -62,18 +66,20 @@ app.post('/flashcards', (req, res) => {
 app.put('/flashcards/:id', (req, res) => {
     const { id } = req.params;
     const { question, answer } = req.body;
-    db.query('UPDATE flashcard SET question = ?, answer = ? WHERE id = ?', [question, answer, id], (err, result) => {
+    const query = 'UPDATE flashcard SET question = ?, answer = ? WHERE id = ?';
+    db.query(query, [question, answer, id], (err, result) => {
         if (err) {
             res.status(500).json({ error: 'Failed to update flashcard' });
         } else {
-            res.json({ message: 'Flashcard updated successfully', id: result.insertId });
+            res.json({ message: 'Flashcard updated successfully' });
         }
     });
 });
 
 app.delete('/flashcards/:id', (req, res) => {
     const { id } = req.params;
-    db.query('DELETE FROM flashcard WHERE id = ?', [id], (err, result) => {
+    const query = 'DELETE FROM flashcard WHERE id = ?';
+    db.query(query, [id], (err, result) => {
         if (err) {
             res.status(500).json({ error: 'Failed to delete flashcard' });
         } else {
@@ -84,8 +90,9 @@ app.delete('/flashcards/:id', (req, res) => {
 
 // Serve the React app for any other routes
 app.get('/*', function (req, res) {
-  res.sendFile(path.join(__dirname, '../flashcardsProject/build', 'index.html'));
+    res.sendFile(path.join(__dirname, '../flashcardsProject/build', 'index.html'));
 });
 
+// Start the server
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Server is running on port ${port}`));
