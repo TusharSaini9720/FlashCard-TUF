@@ -24,7 +24,7 @@ db.connect(err => {
         console.log('MySQL Connected...');
     }
 });
-app.use(express.static(path.join(__dirname, '/flashcardsProject/build')));
+app.use(express.static(path.join(__dirname, '../flashcardsProject/build')));
 
 app.get('/*', function (req, res) {
   res.sendFile(path.join(__dirname, 'flashcardsProject','build', 'index.html'));
