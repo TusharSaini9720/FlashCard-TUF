@@ -1,7 +1,7 @@
 const express=require('express');
 const sql=require('mysql2');
 const cors = require('cors');
-const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const path = require('path');
 require('dotenv').config();
 
@@ -30,6 +30,13 @@ app.use(express.static(path.join(__dirname, '../flashcardsProject/build')));
 app.get('/*', function (req, res) {
   res.sendFile(path.join(__dirname, '../flashcardsProject/build', 'index.html'));
 });
+const corsOption = {
+    origin: ['http://127.0.0.1:3001',"https://flashcard-tuf.onrender.com/"],
+    credentials: true,
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+}
+app.use(cors(corsOption));
+app.use(cookieParser());
 
 app.get('/flashcards', (req, res) => {
     const query = 'SELECT * FROM flashcard';

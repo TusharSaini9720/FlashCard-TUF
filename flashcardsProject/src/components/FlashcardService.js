@@ -1,7 +1,7 @@
 // src/services/flashcardService.js
 import axios from 'axios';
 
-const API_URL = 'https://flashcard-tuf.onrender.com/flashcards';
+const API_URL = "/flashcards";
 
 export const getFlashcards = async () => {
     return await axios.get(API_URL);
