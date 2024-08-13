@@ -24,7 +24,7 @@ db.connect(err => {
         console.log('MySQL Connected...');
     }
 });
-__dirname = path.resolve();
+// __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, '../flashcardsProject/build')));
 
 app.get('/*', function (req, res) {
