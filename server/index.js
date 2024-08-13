@@ -24,6 +24,7 @@ db.connect(err => {
         console.log('MySQL Connected...');
     }
 });
+__dirname = path.resolve();
 app.use(express.static(path.join(__dirname, '../flashcardsProject/build')));
 
 app.get('/*', function (req, res) {
@@ -74,6 +75,8 @@ app.delete('/flashcards/:id', (req, res) => {
     });
 });
 
-
+app.get("*", (req, res) => {
+  res.redirect(`${req.protocol}://${req.get("host")}`);
+});
 const port=5000;
 app.listen(port, () => console.log('Server is running'));
