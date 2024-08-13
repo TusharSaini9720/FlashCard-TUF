@@ -1,14 +1,21 @@
-const express=require('express');
-const sql=require('mysql2');
+const express = require('express');
+const sql = require('mysql2');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 require('dotenv').config();
 
-const app=express();
+const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(cookieParser());  // Parse cookies before routes that need it
+
+const corsOption = {
+    origin: ['http://127.0.0.1:3001', "https://flashcard-tuf.onrender.com/"],
+    credentials: true,
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+};
+app.use(cors(corsOption));
 
 const db = sql.createConnection({
     host: process.env.DB_HOST,
@@ -24,20 +31,11 @@ db.connect(err => {
         console.log('MySQL Connected...');
     }
 });
-// __dirname = path.resolve();
+
+// Serve static files from the React app
 app.use(express.static(path.join(__dirname, '../flashcardsProject/build')));
 
-app.get('/*', function (req, res) {
-  res.sendFile(path.join(__dirname, '../flashcardsProject/build', 'index.html'));
-});
-const corsOption = {
-    origin: ['http://127.0.0.1:3001',"https://flashcard-tuf.onrender.com/"],
-    credentials: true,
-    methods: ["GET", "POST", "PATCH", "DELETE"],
-}
-app.use(cors(corsOption));
-app.use(cookieParser());
-
+// API routes
 app.get('/flashcards', (req, res) => {
     const query = 'SELECT * FROM flashcard';
     db.query(query, (err, results) => {
@@ -48,6 +46,7 @@ app.get('/flashcards', (req, res) => {
         }
     });
 });
+
 app.post('/flashcards', (req, res) => {
     const { question, answer } = req.body;
     const query = 'INSERT INTO flashcard (question, answer) VALUES (?, ?)';
@@ -59,6 +58,7 @@ app.post('/flashcards', (req, res) => {
         }
     });
 });
+
 app.put('/flashcards/:id', (req, res) => {
     const { id } = req.params;
     const { question, answer } = req.body;
@@ -77,13 +77,15 @@ app.delete('/flashcards/:id', (req, res) => {
         if (err) {
             res.status(500).json({ error: 'Failed to delete flashcard' });
         } else {
-            res.json({ message: 'Flashcard deleted successfully', id: result.insertId });
+            res.json({ message: 'Flashcard deleted successfully' });
         }
     });
 });
 
-app.get("*", (req, res) => {
-  res.redirect(`${req.protocol}://${req.get("host")}`);
+// Serve the React app for any other routes
+app.get('/*', function (req, res) {
+  res.sendFile(path.join(__dirname, '../flashcardsProject/build', 'index.html'));
 });
-const port=5000;
-app.listen(port, () => console.log('Server is running'));
+
+const port = process.env.PORT || 5000;
+app.listen(port, () => console.log(`Server is running on port ${port}`));
